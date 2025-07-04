@@ -1,0 +1,871 @@
+{
+  "project": {
+    "name": "CRMAdmin",
+    "displayName": "CRM客户管理系统",
+    "version": "1.0.0",
+    "description": "专业的客户关系管理系统，支持销售流程、客户跟进、商机管理",
+    "author": "VibeTemplate",
+    "homepage": "https://github.com/vibetemplate/crm-admin",
+    "keywords": ["crm", "customer", "sales", "management", "react", "nextjs"],
+    "license": "MIT"
+  },
+  "ui": {
+    "theme": {
+      "name": "default",
+      "primaryColor": "#52c41a",
+      "errorColor": "#ff4d4f",
+      "warningColor": "#faad14",
+      "successColor": "#52c41a",
+      "infoColor": "#1890ff",
+      "borderRadius": 6,
+      "fontSize": 14
+    },
+    "layout": {
+      "type": "side",
+      "fixedHeader": true,
+      "fixedSidebar": true,
+      "colorWeak": false,
+      "multiTab": true,
+      "splitMenus": false
+    },
+    "darkMode": {
+      "enabled": true,
+      "defaultMode": "light",
+      "storageKey": "crm-theme-mode"
+    },
+    "responsive": {
+      "enabled": true,
+      "breakpoints": {
+        "xs": 480,
+        "sm": 576,
+        "md": 768,
+        "lg": 992,
+        "xl": 1200,
+        "xxl": 1600
+      }
+    },
+    "watermark": {
+      "enabled": true,
+      "content": "CRM管理系统",
+      "fontSize": 16,
+      "opacity": 0.1
+    }
+  },
+  "features": {
+    "auth": {
+      "enabled": true,
+      "provider": "nextauth",
+      "strategy": "jwt",
+      "sessionTimeout": 7200,
+      "multiDevice": true,
+      "socialLogin": {
+        "google": true,
+        "github": false,
+        "wechat": true,
+        "dingtalk": true
+      }
+    },
+    "permissions": {
+      "enabled": true,
+      "type": "rbac",
+      "granularity": "route",
+      "dynamicRoutes": true,
+      "buttonLevel": true
+    },
+    "i18n": {
+      "enabled": true,
+      "defaultLocale": "zh-CN",
+      "locales": ["zh-CN", "en-US"],
+      "fallbackLocale": "zh-CN",
+      "detectBrowserLanguage": true
+    },
+    "analytics": {
+      "enabled": true,
+      "provider": "custom",
+      "trackPageView": true,
+      "trackUserAction": true,
+      "trackError": true
+    },
+    "notifications": {
+      "enabled": true,
+      "realtime": true,
+      "types": ["success", "info", "warning", "error"],
+      "position": "topRight",
+      "maxCount": 10
+    },
+    "export": {
+      "enabled": true,
+      "formats": ["excel", "csv", "pdf"],
+      "maxRecords": 50000
+    },
+    "upload": {
+      "enabled": true,
+      "maxSize": "10MB",
+      "allowedTypes": ["image/*", "application/pdf", ".xlsx", ".docx"],
+      "storage": "oss"
+    },
+    "cache": {
+      "enabled": true,
+      "provider": "localStorage",
+      "ttl": 3600,
+      "prefix": "crm_admin_"
+    }
+  },
+  "modules": [
+    {
+      "name": "dashboard",
+      "title": "销售概览",
+      "icon": "DashboardOutlined",
+      "path": "/dashboard",
+      "component": "Dashboard",
+      "permissions": ["dashboard:view"],
+      "cache": true
+    },
+    {
+      "name": "customers",
+      "title": "客户管理",
+      "icon": "ContactsOutlined",
+      "path": "/customers",
+      "permissions": ["customers:view"],
+      "children": [
+        {
+          "name": "customer-list",
+          "title": "客户列表",
+          "icon": "TeamOutlined",
+          "path": "/customers/list",
+          "component": "CustomerList",
+          "permissions": ["customers:list:view"],
+          "actions": [
+            {
+              "name": "create",
+              "title": "新增客户",
+              "permission": "customers:create",
+              "type": "primary"
+            },
+            {
+              "name": "edit",
+              "title": "编辑",
+              "permission": "customers:edit"
+            },
+            {
+              "name": "delete",
+              "title": "删除",
+              "permission": "customers:delete"
+            },
+            {
+              "name": "export",
+              "title": "导出",
+              "permission": "customers:export"
+            }
+          ]
+        },
+        {
+          "name": "customer-pool",
+          "title": "客户公海",
+          "icon": "GlobalOutlined",
+          "path": "/customers/pool",
+          "component": "CustomerPool",
+          "permissions": ["customers:pool:view"]
+        },
+        {
+          "name": "customer-groups",
+          "title": "客户分组",
+          "icon": "ClusterOutlined",
+          "path": "/customers/groups",
+          "component": "CustomerGroups",
+          "permissions": ["customers:groups:view"]
+        },
+        {
+          "name": "customer-tags",
+          "title": "客户标签",
+          "icon": "TagsOutlined",
+          "path": "/customers/tags",
+          "component": "CustomerTags",
+          "permissions": ["customers:tags:view"]
+        }
+      ]
+    },
+    {
+      "name": "leads",
+      "title": "线索管理",
+      "icon": "BulbOutlined",
+      "path": "/leads",
+      "permissions": ["leads:view"],
+      "children": [
+        {
+          "name": "lead-list",
+          "title": "线索列表",
+          "icon": "UnorderedListOutlined",
+          "path": "/leads/list",
+          "component": "LeadList",
+          "permissions": ["leads:list:view"],
+          "actions": [
+            {
+              "name": "create",
+              "title": "新增线索",
+              "permission": "leads:create",
+              "type": "primary"
+            },
+            {
+              "name": "convert",
+              "title": "转化客户",
+              "permission": "leads:convert"
+            },
+            {
+              "name": "assign",
+              "title": "分配",
+              "permission": "leads:assign"
+            },
+            {
+              "name": "delete",
+              "title": "删除",
+              "permission": "leads:delete"
+            }
+          ]
+        },
+        {
+          "name": "lead-sources",
+          "title": "线索来源",
+          "icon": "EnvironmentOutlined",
+          "path": "/leads/sources",
+          "component": "LeadSources",
+          "permissions": ["leads:sources:view"]
+        }
+      ]
+    },
+    {
+      "name": "opportunities",
+      "title": "销售机会",
+      "icon": "TrophyOutlined",
+      "path": "/opportunities",
+      "permissions": ["opportunities:view"],
+      "children": [
+        {
+          "name": "opportunity-list",
+          "title": "机会列表",
+          "icon": "UnorderedListOutlined",
+          "path": "/opportunities/list",
+          "component": "OpportunityList",
+          "permissions": ["opportunities:list:view"],
+          "actions": [
+            {
+              "name": "create",
+              "title": "新增机会",
+              "permission": "opportunities:create",
+              "type": "primary"
+            },
+            {
+              "name": "edit",
+              "title": "编辑",
+              "permission": "opportunities:edit"
+            },
+            {
+              "name": "close",
+              "title": "关闭",
+              "permission": "opportunities:close"
+            },
+            {
+              "name": "delete",
+              "title": "删除",
+              "permission": "opportunities:delete"
+            }
+          ]
+        },
+        {
+          "name": "sales-pipeline",
+          "title": "销售漏斗",
+          "icon": "FunnelPlotOutlined",
+          "path": "/opportunities/pipeline",
+          "component": "SalesPipeline",
+          "permissions": ["opportunities:pipeline:view"]
+        },
+        {
+          "name": "sales-stages",
+          "title": "销售阶段",
+          "icon": "NodeIndexOutlined",
+          "path": "/opportunities/stages",
+          "component": "SalesStages",
+          "permissions": ["opportunities:stages:view"]
+        }
+      ]
+    },
+    {
+      "name": "activities",
+      "title": "活动记录",
+      "icon": "CalendarOutlined",
+      "path": "/activities",
+      "permissions": ["activities:view"],
+      "children": [
+        {
+          "name": "activity-list",
+          "title": "活动列表",
+          "icon": "UnorderedListOutlined",
+          "path": "/activities/list",
+          "component": "ActivityList",
+          "permissions": ["activities:list:view"],
+          "actions": [
+            {
+              "name": "create",
+              "title": "新增活动",
+              "permission": "activities:create",
+              "type": "primary"
+            },
+            {
+              "name": "edit",
+              "title": "编辑",
+              "permission": "activities:edit"
+            },
+            {
+              "name": "complete",
+              "title": "完成",
+              "permission": "activities:complete"
+            },
+            {
+              "name": "delete",
+              "title": "删除",
+              "permission": "activities:delete"
+            }
+          ]
+        },
+        {
+          "name": "follow-ups",
+          "title": "跟进计划",
+          "icon": "ScheduleOutlined",
+          "path": "/activities/followups",
+          "component": "FollowUps",
+          "permissions": ["activities:followups:view"]
+        },
+        {
+          "name": "meetings",
+          "title": "会议安排",
+          "icon": "VideoCameraOutlined",
+          "path": "/activities/meetings",
+          "component": "Meetings",
+          "permissions": ["activities:meetings:view"]
+        },
+        {
+          "name": "calls",
+          "title": "通话记录",
+          "icon": "PhoneOutlined",
+          "path": "/activities/calls",
+          "component": "Calls",
+          "permissions": ["activities:calls:view"]
+        }
+      ]
+    },
+    {
+      "name": "reports",
+      "title": "报表分析",
+      "icon": "BarChartOutlined",
+      "path": "/reports",
+      "permissions": ["reports:view"],
+      "children": [
+        {
+          "name": "sales-reports",
+          "title": "销售报表",
+          "icon": "LineChartOutlined",
+          "path": "/reports/sales",
+          "component": "SalesReports",
+          "permissions": ["reports:sales:view"]
+        },
+        {
+          "name": "customer-reports",
+          "title": "客户报表",
+          "icon": "PieChartOutlined",
+          "path": "/reports/customers",
+          "component": "CustomerReports",
+          "permissions": ["reports:customers:view"]
+        },
+        {
+          "name": "performance-reports",
+          "title": "业绩报表",
+          "icon": "FundOutlined",
+          "path": "/reports/performance",
+          "component": "PerformanceReports",
+          "permissions": ["reports:performance:view"]
+        },
+        {
+          "name": "forecast",
+          "title": "销售预测",
+          "icon": "RiseOutlined",
+          "path": "/reports/forecast",
+          "component": "SalesForecast",
+          "permissions": ["reports:forecast:view"]
+        }
+      ]
+    },
+    {
+      "name": "marketing",
+      "title": "营销管理",
+      "icon": "BulbOutlined",
+      "path": "/marketing",
+      "permissions": ["marketing:view"],
+      "children": [
+        {
+          "name": "campaigns",
+          "title": "营销活动",
+          "icon": "RocketOutlined",
+          "path": "/marketing/campaigns",
+          "component": "MarketingCampaigns",
+          "permissions": ["marketing:campaigns:view"]
+        },
+        {
+          "name": "email-templates",
+          "title": "邮件模板",
+          "icon": "MailOutlined",
+          "path": "/marketing/email-templates",
+          "component": "EmailTemplates",
+          "permissions": ["marketing:emails:view"]
+        },
+        {
+          "name": "automation",
+          "title": "营销自动化",
+          "icon": "ControlOutlined",
+          "path": "/marketing/automation",
+          "component": "MarketingAutomation",
+          "permissions": ["marketing:automation:view"]
+        }
+      ]
+    },
+    {
+      "name": "products",
+      "title": "产品管理",
+      "icon": "ShoppingOutlined",
+      "path": "/products",
+      "permissions": ["products:view"],
+      "children": [
+        {
+          "name": "product-list",
+          "title": "产品列表",
+          "icon": "UnorderedListOutlined",
+          "path": "/products/list",
+          "component": "ProductList",
+          "permissions": ["products:list:view"]
+        },
+        {
+          "name": "price-books",
+          "title": "价格手册",
+          "icon": "DollarCircleOutlined",
+          "path": "/products/price-books",
+          "component": "PriceBooks",
+          "permissions": ["products:pricing:view"]
+        }
+      ]
+    },
+    {
+      "name": "system",
+      "title": "系统管理",
+      "icon": "SettingOutlined",
+      "path": "/system",
+      "permissions": ["system:view"],
+      "children": [
+        {
+          "name": "users",
+          "title": "用户管理",
+          "icon": "UserOutlined",
+          "path": "/system/users",
+          "component": "SystemUsers",
+          "permissions": ["system:users:view"]
+        },
+        {
+          "name": "roles",
+          "title": "角色管理",
+          "icon": "SafetyCertificateOutlined",
+          "path": "/system/roles",
+          "component": "SystemRoles",
+          "permissions": ["system:roles:view"]
+        },
+        {
+          "name": "teams",
+          "title": "团队管理",
+          "icon": "TeamOutlined",
+          "path": "/system/teams",
+          "component": "SystemTeams",
+          "permissions": ["system:teams:view"]
+        },
+        {
+          "name": "territories",
+          "title": "销售区域",
+          "icon": "EnvironmentOutlined",
+          "path": "/system/territories",
+          "component": "SalesTerritories",
+          "permissions": ["system:territories:view"]
+        },
+        {
+          "name": "settings",
+          "title": "系统设置",
+          "icon": "ControlOutlined",
+          "path": "/system/settings",
+          "component": "SystemSettings",
+          "permissions": ["system:settings:view"]
+        }
+      ]
+    }
+  ],
+  "permissions": {
+    "roles": [
+      {
+        "id": "admin",
+        "name": "系统管理员",
+        "description": "拥有所有权限",
+        "permissions": ["*"]
+      },
+      {
+        "id": "sales_manager",
+        "name": "销售经理",
+        "description": "销售团队管理权限",
+        "permissions": [
+          "dashboard:view",
+          "customers:*",
+          "leads:*",
+          "opportunities:*",
+          "activities:*",
+          "reports:*",
+          "marketing:view",
+          "products:view",
+          "system:users:view",
+          "system:teams:view"
+        ]
+      },
+      {
+        "id": "sales_rep",
+        "name": "销售代表",
+        "description": "基础销售权限",
+        "permissions": [
+          "dashboard:view",
+          "customers:list:view",
+          "customers:create",
+          "customers:edit",
+          "leads:list:view",
+          "leads:create",
+          "leads:convert",
+          "opportunities:list:view",
+          "opportunities:create",
+          "opportunities:edit",
+          "activities:*",
+          "reports:view",
+          "products:list:view"
+        ]
+      },
+      {
+        "id": "marketing_manager",
+        "name": "市场经理",
+        "description": "营销管理权限",
+        "permissions": [
+          "dashboard:view",
+          "customers:list:view",
+          "leads:*",
+          "marketing:*",
+          "reports:customers:view",
+          "reports:sales:view"
+        ]
+      }
+    ],
+    "resources": [
+      {
+        "id": "dashboard",
+        "name": "销售概览",
+        "actions": ["view"]
+      },
+      {
+        "id": "customers",
+        "name": "客户管理",
+        "actions": ["view"],
+        "children": [
+          {
+            "id": "list",
+            "name": "客户列表",
+            "actions": ["view", "create", "edit", "delete", "export"]
+          },
+          {
+            "id": "pool",
+            "name": "客户公海",
+            "actions": ["view", "assign"]
+          },
+          {
+            "id": "groups",
+            "name": "客户分组",
+            "actions": ["view", "create", "edit", "delete"]
+          },
+          {
+            "id": "tags",
+            "name": "客户标签",
+            "actions": ["view", "create", "edit", "delete"]
+          }
+        ]
+      },
+      {
+        "id": "leads",
+        "name": "线索管理",
+        "actions": ["view"],
+        "children": [
+          {
+            "id": "list",
+            "name": "线索列表",
+            "actions": ["view", "create", "edit", "delete", "convert", "assign"]
+          },
+          {
+            "id": "sources",
+            "name": "线索来源",
+            "actions": ["view", "create", "edit", "delete"]
+          }
+        ]
+      },
+      {
+        "id": "opportunities",
+        "name": "销售机会",
+        "actions": ["view"],
+        "children": [
+          {
+            "id": "list",
+            "name": "机会列表",
+            "actions": ["view", "create", "edit", "delete", "close"]
+          },
+          {
+            "id": "pipeline",
+            "name": "销售漏斗",
+            "actions": ["view"]
+          },
+          {
+            "id": "stages",
+            "name": "销售阶段",
+            "actions": ["view", "create", "edit", "delete"]
+          }
+        ]
+      },
+      {
+        "id": "activities",
+        "name": "活动记录",
+        "actions": ["view"],
+        "children": [
+          {
+            "id": "list",
+            "name": "活动列表",
+            "actions": ["view", "create", "edit", "delete", "complete"]
+          },
+          {
+            "id": "followups",
+            "name": "跟进计划",
+            "actions": ["view", "create", "edit", "delete"]
+          },
+          {
+            "id": "meetings",
+            "name": "会议安排",
+            "actions": ["view", "create", "edit", "delete"]
+          },
+          {
+            "id": "calls",
+            "name": "通话记录",
+            "actions": ["view", "create", "edit", "delete"]
+          }
+        ]
+      },
+      {
+        "id": "reports",
+        "name": "报表分析",
+        "actions": ["view"],
+        "children": [
+          {
+            "id": "sales",
+            "name": "销售报表",
+            "actions": ["view", "export"]
+          },
+          {
+            "id": "customers",
+            "name": "客户报表",
+            "actions": ["view", "export"]
+          },
+          {
+            "id": "performance",
+            "name": "业绩报表",
+            "actions": ["view", "export"]
+          },
+          {
+            "id": "forecast",
+            "name": "销售预测",
+            "actions": ["view", "export"]
+          }
+        ]
+      },
+      {
+        "id": "marketing",
+        "name": "营销管理",
+        "actions": ["view"],
+        "children": [
+          {
+            "id": "campaigns",
+            "name": "营销活动",
+            "actions": ["view", "create", "edit", "delete", "publish"]
+          },
+          {
+            "id": "emails",
+            "name": "邮件模板",
+            "actions": ["view", "create", "edit", "delete"]
+          },
+          {
+            "id": "automation",
+            "name": "营销自动化",
+            "actions": ["view", "create", "edit", "delete"]
+          }
+        ]
+      },
+      {
+        "id": "products",
+        "name": "产品管理",
+        "actions": ["view"],
+        "children": [
+          {
+            "id": "list",
+            "name": "产品列表",
+            "actions": ["view", "create", "edit", "delete"]
+          },
+          {
+            "id": "pricing",
+            "name": "价格手册",
+            "actions": ["view", "create", "edit", "delete"]
+          }
+        ]
+      },
+      {
+        "id": "system",
+        "name": "系统管理",
+        "actions": ["view"],
+        "children": [
+          {
+            "id": "users",
+            "name": "用户管理",
+            "actions": ["view", "create", "edit", "delete"]
+          },
+          {
+            "id": "roles",
+            "name": "角色管理",
+            "actions": ["view", "create", "edit", "delete"]
+          },
+          {
+            "id": "teams",
+            "name": "团队管理",
+            "actions": ["view", "create", "edit", "delete"]
+          },
+          {
+            "id": "territories",
+            "name": "销售区域",
+            "actions": ["view", "create", "edit", "delete"]
+          },
+          {
+            "id": "settings",
+            "name": "系统设置",
+            "actions": ["view", "edit"]
+          }
+        ]
+      }
+    ]
+  },
+  "api": {
+    "baseURL": "https://api.crm.com",
+    "timeout": 15000,
+    "retries": 3,
+    "version": "v1",
+    "prefix": "/api",
+    "auth": {
+      "type": "bearer",
+      "headerName": "Authorization",
+      "tokenPrefix": "Bearer "
+    },
+    "interceptors": {
+      "request": true,
+      "response": true,
+      "error": true
+    },
+    "mock": {
+      "enabled": true,
+      "delay": 1000,
+      "baseURL": "/api/mock"
+    }
+  },
+  "database": {
+    "type": "postgresql",
+    "host": "localhost",
+    "port": 5432,
+    "database": "crm_admin",
+    "username": "admin",
+    "pool": {
+      "min": 5,
+      "max": 20
+    },
+    "migrations": {
+      "enabled": true,
+      "directory": "migrations"
+    },
+    "seeds": {
+      "enabled": true,
+      "directory": "seeds"
+    }
+  },
+  "deployment": {
+    "environment": "production",
+    "baseURL": "https://admin.crm.com",
+    "cdn": {
+      "enabled": true,
+      "domain": "https://cdn.crm.com"
+    },
+    "ssl": {
+      "enabled": true,
+      "forceHTTPS": true
+    },
+    "compression": {
+      "enabled": true,
+      "level": 6
+    },
+    "monitoring": {
+      "enabled": true,
+      "errorTracking": true,
+      "performanceMonitoring": true
+    }
+  },
+  "development": {
+    "port": 3000,
+    "host": "localhost",
+    "https": false,
+    "proxy": {
+      "/api": {
+        "target": "http://localhost:8080",
+        "changeOrigin": true,
+        "pathRewrite": {
+          "^/api": ""
+        }
+      }
+    },
+    "devTools": {
+      "enabled": true,
+      "redux": true,
+      "reactQuery": true
+    }
+  },
+  "build": {
+    "outputPath": "dist",
+    "publicPath": "/",
+    "sourcemap": false,
+    "minify": true,
+    "extractCSS": true,
+    "bundleAnalyzer": false,
+    "optimization": {
+      "splitChunks": true,
+      "runtimeChunk": true,
+      "usedExports": true,
+      "sideEffects": false
+    }
+  },
+  "testing": {
+    "unit": {
+      "enabled": true,
+      "framework": "jest",
+      "coverage": true,
+      "threshold": 85
+    },
+    "e2e": {
+      "enabled": true,
+      "framework": "playwright",
+      "baseURL": "http://localhost:3000"
+    }
+  }
+}

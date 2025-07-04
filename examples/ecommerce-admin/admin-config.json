@@ -1,0 +1,708 @@
+{
+  "project": {
+    "name": "EcommerceAdmin",
+    "displayName": "电商管理后台",
+    "version": "1.0.0",
+    "description": "现代化电商管理系统，支持商品、订单、用户、营销全流程管理",
+    "author": "VibeTemplate",
+    "homepage": "https://github.com/vibetemplate/ecommerce-admin",
+    "keywords": ["ecommerce", "admin", "management", "react", "nextjs"],
+    "license": "MIT"
+  },
+  "ui": {
+    "theme": {
+      "name": "default",
+      "primaryColor": "#1890ff",
+      "errorColor": "#ff4d4f",
+      "warningColor": "#faad14",
+      "successColor": "#52c41a",
+      "infoColor": "#1890ff",
+      "borderRadius": 6,
+      "fontSize": 14
+    },
+    "layout": {
+      "type": "side",
+      "fixedHeader": true,
+      "fixedSidebar": true,
+      "colorWeak": false,
+      "multiTab": true,
+      "splitMenus": false
+    },
+    "darkMode": {
+      "enabled": true,
+      "defaultMode": "light",
+      "storageKey": "ecommerce-theme-mode"
+    },
+    "responsive": {
+      "enabled": true,
+      "breakpoints": {
+        "xs": 480,
+        "sm": 576,
+        "md": 768,
+        "lg": 992,
+        "xl": 1200,
+        "xxl": 1600
+      }
+    },
+    "watermark": {
+      "enabled": true,
+      "content": "电商管理后台",
+      "fontSize": 16,
+      "opacity": 0.1
+    }
+  },
+  "features": {
+    "auth": {
+      "enabled": true,
+      "provider": "nextauth",
+      "strategy": "jwt",
+      "sessionTimeout": 7200,
+      "multiDevice": true,
+      "socialLogin": {
+        "google": true,
+        "github": false,
+        "wechat": true,
+        "dingtalk": true
+      }
+    },
+    "permissions": {
+      "enabled": true,
+      "type": "rbac",
+      "granularity": "route",
+      "dynamicRoutes": true,
+      "buttonLevel": true
+    },
+    "i18n": {
+      "enabled": true,
+      "defaultLocale": "zh-CN",
+      "locales": ["zh-CN", "en-US", "ja-JP"],
+      "fallbackLocale": "zh-CN",
+      "detectBrowserLanguage": true
+    },
+    "analytics": {
+      "enabled": true,
+      "provider": "custom",
+      "trackPageView": true,
+      "trackUserAction": true,
+      "trackError": true
+    },
+    "notifications": {
+      "enabled": true,
+      "realtime": true,
+      "types": ["success", "info", "warning", "error"],
+      "position": "topRight",
+      "maxCount": 10
+    },
+    "export": {
+      "enabled": true,
+      "formats": ["excel", "csv", "pdf"],
+      "maxRecords": 50000
+    },
+    "upload": {
+      "enabled": true,
+      "maxSize": "20MB",
+      "allowedTypes": ["image/*", "application/pdf", ".xlsx", ".docx"],
+      "storage": "oss"
+    },
+    "cache": {
+      "enabled": true,
+      "provider": "localStorage",
+      "ttl": 3600,
+      "prefix": "ecommerce_admin_"
+    }
+  },
+  "modules": [
+    {
+      "name": "dashboard",
+      "title": "数据概览",
+      "icon": "DashboardOutlined",
+      "path": "/dashboard",
+      "component": "Dashboard",
+      "permissions": ["dashboard:view"],
+      "cache": true
+    },
+    {
+      "name": "products",
+      "title": "商品管理",
+      "icon": "ShoppingOutlined",
+      "path": "/products",
+      "permissions": ["products:view"],
+      "children": [
+        {
+          "name": "product-list",
+          "title": "商品列表",
+          "icon": "UnorderedListOutlined",
+          "path": "/products/list",
+          "component": "ProductList",
+          "permissions": ["products:list:view"],
+          "actions": [
+            {
+              "name": "create",
+              "title": "新增商品",
+              "permission": "products:create",
+              "type": "primary"
+            },
+            {
+              "name": "edit",
+              "title": "编辑",
+              "permission": "products:edit"
+            },
+            {
+              "name": "delete",
+              "title": "删除",
+              "permission": "products:delete"
+            },
+            {
+              "name": "export",
+              "title": "导出",
+              "permission": "products:export"
+            }
+          ]
+        },
+        {
+          "name": "categories",
+          "title": "商品分类",
+          "icon": "AppstoreOutlined",
+          "path": "/products/categories",
+          "component": "ProductCategories",
+          "permissions": ["products:categories:view"]
+        },
+        {
+          "name": "brands",
+          "title": "品牌管理",
+          "icon": "TagOutlined",
+          "path": "/products/brands",
+          "component": "ProductBrands",
+          "permissions": ["products:brands:view"]
+        },
+        {
+          "name": "inventory",
+          "title": "库存管理",
+          "icon": "InboxOutlined",
+          "path": "/products/inventory",
+          "component": "ProductInventory",
+          "permissions": ["products:inventory:view"]
+        }
+      ]
+    },
+    {
+      "name": "orders",
+      "title": "订单管理",
+      "icon": "ShoppingCartOutlined",
+      "path": "/orders",
+      "permissions": ["orders:view"],
+      "children": [
+        {
+          "name": "order-list",
+          "title": "订单列表",
+          "icon": "UnorderedListOutlined",
+          "path": "/orders/list",
+          "component": "OrderList",
+          "permissions": ["orders:list:view"],
+          "actions": [
+            {
+              "name": "view",
+              "title": "查看详情",
+              "permission": "orders:view"
+            },
+            {
+              "name": "process",
+              "title": "处理订单",
+              "permission": "orders:process"
+            },
+            {
+              "name": "cancel",
+              "title": "取消订单",
+              "permission": "orders:cancel"
+            },
+            {
+              "name": "refund",
+              "title": "退款",
+              "permission": "orders:refund"
+            }
+          ]
+        },
+        {
+          "name": "refunds",
+          "title": "退款管理",
+          "icon": "UndoOutlined",
+          "path": "/orders/refunds",
+          "component": "OrderRefunds",
+          "permissions": ["orders:refunds:view"]
+        },
+        {
+          "name": "reviews",
+          "title": "评价管理",
+          "icon": "StarOutlined",
+          "path": "/orders/reviews",
+          "component": "OrderReviews",
+          "permissions": ["orders:reviews:view"]
+        }
+      ]
+    },
+    {
+      "name": "customers",
+      "title": "客户管理",
+      "icon": "UserOutlined",
+      "path": "/customers",
+      "permissions": ["customers:view"],
+      "children": [
+        {
+          "name": "customer-list",
+          "title": "客户列表",
+          "icon": "TeamOutlined",
+          "path": "/customers/list",
+          "component": "CustomerList",
+          "permissions": ["customers:list:view"],
+          "actions": [
+            {
+              "name": "view",
+              "title": "查看详情",
+              "permission": "customers:view"
+            },
+            {
+              "name": "edit",
+              "title": "编辑",
+              "permission": "customers:edit"
+            },
+            {
+              "name": "disable",
+              "title": "禁用",
+              "permission": "customers:disable"
+            }
+          ]
+        },
+        {
+          "name": "segments",
+          "title": "客户分群",
+          "icon": "ClusterOutlined",
+          "path": "/customers/segments",
+          "component": "CustomerSegments",
+          "permissions": ["customers:segments:view"]
+        },
+        {
+          "name": "feedback",
+          "title": "客户反馈",
+          "icon": "MessageOutlined",
+          "path": "/customers/feedback",
+          "component": "CustomerFeedback",
+          "permissions": ["customers:feedback:view"]
+        }
+      ]
+    },
+    {
+      "name": "marketing",
+      "title": "营销中心",
+      "icon": "BulbOutlined",
+      "path": "/marketing",
+      "permissions": ["marketing:view"],
+      "children": [
+        {
+          "name": "promotions",
+          "title": "促销活动",
+          "icon": "GiftOutlined",
+          "path": "/marketing/promotions",
+          "component": "MarketingPromotions",
+          "permissions": ["marketing:promotions:view"]
+        },
+        {
+          "name": "coupons",
+          "title": "优惠券",
+          "icon": "TagsOutlined",
+          "path": "/marketing/coupons",
+          "component": "MarketingCoupons",
+          "permissions": ["marketing:coupons:view"]
+        },
+        {
+          "name": "campaigns",
+          "title": "营销活动",
+          "icon": "RocketOutlined",
+          "path": "/marketing/campaigns",
+          "component": "MarketingCampaigns",
+          "permissions": ["marketing:campaigns:view"]
+        }
+      ]
+    },
+    {
+      "name": "finance",
+      "title": "财务管理",
+      "icon": "AccountBookOutlined",
+      "path": "/finance",
+      "permissions": ["finance:view"],
+      "children": [
+        {
+          "name": "transactions",
+          "title": "交易记录",
+          "icon": "TransactionOutlined",
+          "path": "/finance/transactions",
+          "component": "FinanceTransactions",
+          "permissions": ["finance:transactions:view"]
+        },
+        {
+          "name": "settlement",
+          "title": "结算管理",
+          "icon": "CalculatorOutlined",
+          "path": "/finance/settlement",
+          "component": "FinanceSettlement",
+          "permissions": ["finance:settlement:view"]
+        },
+        {
+          "name": "reports",
+          "title": "财务报表",
+          "icon": "BarChartOutlined",
+          "path": "/finance/reports",
+          "component": "FinanceReports",
+          "permissions": ["finance:reports:view"]
+        }
+      ]
+    },
+    {
+      "name": "system",
+      "title": "系统管理",
+      "icon": "SettingOutlined",
+      "path": "/system",
+      "permissions": ["system:view"],
+      "children": [
+        {
+          "name": "users",
+          "title": "用户管理",
+          "icon": "UserOutlined",
+          "path": "/system/users",
+          "component": "SystemUsers",
+          "permissions": ["system:users:view"]
+        },
+        {
+          "name": "roles",
+          "title": "角色管理",
+          "icon": "SafetyCertificateOutlined",
+          "path": "/system/roles",
+          "component": "SystemRoles",
+          "permissions": ["system:roles:view"]
+        },
+        {
+          "name": "logs",
+          "title": "操作日志",
+          "icon": "FileTextOutlined",
+          "path": "/system/logs",
+          "component": "SystemLogs",
+          "permissions": ["system:logs:view"]
+        },
+        {
+          "name": "settings",
+          "title": "系统设置",
+          "icon": "ControlOutlined",
+          "path": "/system/settings",
+          "component": "SystemSettings",
+          "permissions": ["system:settings:view"]
+        }
+      ]
+    }
+  ],
+  "permissions": {
+    "roles": [
+      {
+        "id": "admin",
+        "name": "超级管理员",
+        "description": "拥有所有权限",
+        "permissions": ["*"]
+      },
+      {
+        "id": "manager",
+        "name": "运营经理",
+        "description": "拥有商品、订单、客户管理权限",
+        "permissions": [
+          "dashboard:view",
+          "products:*",
+          "orders:*",
+          "customers:*",
+          "marketing:view",
+          "marketing:promotions:*",
+          "marketing:coupons:*"
+        ]
+      },
+      {
+        "id": "operator",
+        "name": "运营专员",
+        "description": "拥有基础操作权限",
+        "permissions": [
+          "dashboard:view",
+          "products:list:view",
+          "products:categories:view",
+          "orders:list:view",
+          "orders:view",
+          "orders:process",
+          "customers:list:view",
+          "customers:view"
+        ]
+      },
+      {
+        "id": "finance",
+        "name": "财务专员",
+        "description": "拥有财务相关权限",
+        "permissions": [
+          "dashboard:view",
+          "orders:list:view",
+          "orders:view",
+          "finance:*"
+        ]
+      }
+    ],
+    "resources": [
+      {
+        "id": "dashboard",
+        "name": "数据概览",
+        "actions": ["view"]
+      },
+      {
+        "id": "products",
+        "name": "商品管理",
+        "actions": ["view"],
+        "children": [
+          {
+            "id": "list",
+            "name": "商品列表",
+            "actions": ["view", "create", "edit", "delete", "export"]
+          },
+          {
+            "id": "categories",
+            "name": "商品分类",
+            "actions": ["view", "create", "edit", "delete"]
+          },
+          {
+            "id": "brands",
+            "name": "品牌管理",
+            "actions": ["view", "create", "edit", "delete"]
+          },
+          {
+            "id": "inventory",
+            "name": "库存管理",
+            "actions": ["view", "edit"]
+          }
+        ]
+      },
+      {
+        "id": "orders",
+        "name": "订单管理",
+        "actions": ["view"],
+        "children": [
+          {
+            "id": "list",
+            "name": "订单列表",
+            "actions": ["view", "process", "cancel", "refund", "export"]
+          },
+          {
+            "id": "refunds",
+            "name": "退款管理",
+            "actions": ["view", "process"]
+          },
+          {
+            "id": "reviews",
+            "name": "评价管理",
+            "actions": ["view", "audit"]
+          }
+        ]
+      },
+      {
+        "id": "customers",
+        "name": "客户管理",
+        "actions": ["view"],
+        "children": [
+          {
+            "id": "list",
+            "name": "客户列表",
+            "actions": ["view", "edit", "disable", "export"]
+          },
+          {
+            "id": "segments",
+            "name": "客户分群",
+            "actions": ["view", "create", "edit", "delete"]
+          },
+          {
+            "id": "feedback",
+            "name": "客户反馈",
+            "actions": ["view", "reply"]
+          }
+        ]
+      },
+      {
+        "id": "marketing",
+        "name": "营销中心",
+        "actions": ["view"],
+        "children": [
+          {
+            "id": "promotions",
+            "name": "促销活动",
+            "actions": ["view", "create", "edit", "delete", "publish"]
+          },
+          {
+            "id": "coupons",
+            "name": "优惠券",
+            "actions": ["view", "create", "edit", "delete", "publish"]
+          },
+          {
+            "id": "campaigns",
+            "name": "营销活动",
+            "actions": ["view", "create", "edit", "delete", "publish"]
+          }
+        ]
+      },
+      {
+        "id": "finance",
+        "name": "财务管理",
+        "actions": ["view"],
+        "children": [
+          {
+            "id": "transactions",
+            "name": "交易记录",
+            "actions": ["view", "export"]
+          },
+          {
+            "id": "settlement",
+            "name": "结算管理",
+            "actions": ["view", "process"]
+          },
+          {
+            "id": "reports",
+            "name": "财务报表",
+            "actions": ["view", "export"]
+          }
+        ]
+      },
+      {
+        "id": "system",
+        "name": "系统管理",
+        "actions": ["view"],
+        "children": [
+          {
+            "id": "users",
+            "name": "用户管理",
+            "actions": ["view", "create", "edit", "delete"]
+          },
+          {
+            "id": "roles",
+            "name": "角色管理",
+            "actions": ["view", "create", "edit", "delete"]
+          },
+          {
+            "id": "logs",
+            "name": "操作日志",
+            "actions": ["view", "export"]
+          },
+          {
+            "id": "settings",
+            "name": "系统设置",
+            "actions": ["view", "edit"]
+          }
+        ]
+      }
+    ]
+  },
+  "api": {
+    "baseURL": "https://api.ecommerce.com",
+    "timeout": 15000,
+    "retries": 3,
+    "version": "v1",
+    "prefix": "/api",
+    "auth": {
+      "type": "bearer",
+      "headerName": "Authorization",
+      "tokenPrefix": "Bearer "
+    },
+    "interceptors": {
+      "request": true,
+      "response": true,
+      "error": true
+    },
+    "mock": {
+      "enabled": true,
+      "delay": 1000,
+      "baseURL": "/api/mock"
+    }
+  },
+  "database": {
+    "type": "mysql",
+    "host": "localhost",
+    "port": 3306,
+    "database": "ecommerce_admin",
+    "username": "admin",
+    "pool": {
+      "min": 5,
+      "max": 20
+    },
+    "migrations": {
+      "enabled": true,
+      "directory": "migrations"
+    },
+    "seeds": {
+      "enabled": true,
+      "directory": "seeds"
+    }
+  },
+  "deployment": {
+    "environment": "production",
+    "baseURL": "https://admin.ecommerce.com",
+    "cdn": {
+      "enabled": true,
+      "domain": "https://cdn.ecommerce.com"
+    },
+    "ssl": {
+      "enabled": true,
+      "forceHTTPS": true
+    },
+    "compression": {
+      "enabled": true,
+      "level": 6
+    },
+    "monitoring": {
+      "enabled": true,
+      "errorTracking": true,
+      "performanceMonitoring": true
+    }
+  },
+  "development": {
+    "port": 3000,
+    "host": "localhost",
+    "https": false,
+    "proxy": {
+      "/api": {
+        "target": "http://localhost:8080",
+        "changeOrigin": true,
+        "pathRewrite": {
+          "^/api": ""
+        }
+      }
+    },
+    "devTools": {
+      "enabled": true,
+      "redux": true,
+      "reactQuery": true
+    }
+  },
+  "build": {
+    "outputPath": "dist",
+    "publicPath": "/",
+    "sourcemap": false,
+    "minify": true,
+    "extractCSS": true,
+    "bundleAnalyzer": false,
+    "optimization": {
+      "splitChunks": true,
+      "runtimeChunk": true,
+      "usedExports": true,
+      "sideEffects": false
+    }
+  },
+  "testing": {
+    "unit": {
+      "enabled": true,
+      "framework": "jest",
+      "coverage": true,
+      "threshold": 85
+    },
+    "e2e": {
+      "enabled": true,
+      "framework": "playwright",
+      "baseURL": "http://localhost:3000"
+    }
+  }
+}

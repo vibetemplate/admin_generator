@@ -1,0 +1,955 @@
+{
+  "project": {
+    "name": "CMSAdmin",
+    "displayName": "内容管理系统",
+    "version": "1.0.0",
+    "description": "现代化内容管理系统，支持文章编辑、媒体管理、SEO优化",
+    "author": "VibeTemplate",
+    "homepage": "https://github.com/vibetemplate/cms-admin",
+    "keywords": ["cms", "content", "management", "blog", "react", "nextjs"],
+    "license": "MIT"
+  },
+  "ui": {
+    "theme": {
+      "name": "default",
+      "primaryColor": "#722ed1",
+      "errorColor": "#ff4d4f",
+      "warningColor": "#faad14",
+      "successColor": "#52c41a",
+      "infoColor": "#1890ff",
+      "borderRadius": 6,
+      "fontSize": 14
+    },
+    "layout": {
+      "type": "side",
+      "fixedHeader": true,
+      "fixedSidebar": true,
+      "colorWeak": false,
+      "multiTab": true,
+      "splitMenus": false
+    },
+    "darkMode": {
+      "enabled": true,
+      "defaultMode": "light",
+      "storageKey": "cms-theme-mode"
+    },
+    "responsive": {
+      "enabled": true,
+      "breakpoints": {
+        "xs": 480,
+        "sm": 576,
+        "md": 768,
+        "lg": 992,
+        "xl": 1200,
+        "xxl": 1600
+      }
+    },
+    "watermark": {
+      "enabled": true,
+      "content": "内容管理系统",
+      "fontSize": 16,
+      "opacity": 0.1
+    }
+  },
+  "features": {
+    "auth": {
+      "enabled": true,
+      "provider": "nextauth",
+      "strategy": "jwt",
+      "sessionTimeout": 7200,
+      "multiDevice": true,
+      "socialLogin": {
+        "google": true,
+        "github": true,
+        "wechat": false,
+        "dingtalk": false
+      }
+    },
+    "permissions": {
+      "enabled": true,
+      "type": "rbac",
+      "granularity": "route",
+      "dynamicRoutes": true,
+      "buttonLevel": true
+    },
+    "i18n": {
+      "enabled": true,
+      "defaultLocale": "zh-CN",
+      "locales": ["zh-CN", "en-US", "ja-JP"],
+      "fallbackLocale": "zh-CN",
+      "detectBrowserLanguage": true
+    },
+    "analytics": {
+      "enabled": true,
+      "provider": "google",
+      "trackPageView": true,
+      "trackUserAction": true,
+      "trackError": true
+    },
+    "notifications": {
+      "enabled": true,
+      "realtime": true,
+      "types": ["success", "info", "warning", "error"],
+      "position": "topRight",
+      "maxCount": 10
+    },
+    "export": {
+      "enabled": true,
+      "formats": ["excel", "csv", "pdf"],
+      "maxRecords": 10000
+    },
+    "upload": {
+      "enabled": true,
+      "maxSize": "50MB",
+      "allowedTypes": ["image/*", "video/*", "audio/*", "application/pdf", ".docx", ".xlsx"],
+      "storage": "oss"
+    },
+    "cache": {
+      "enabled": true,
+      "provider": "redis",
+      "ttl": 3600,
+      "prefix": "cms_admin_"
+    }
+  },
+  "modules": [
+    {
+      "name": "dashboard",
+      "title": "内容概览",
+      "icon": "DashboardOutlined",
+      "path": "/dashboard",
+      "component": "Dashboard",
+      "permissions": ["dashboard:view"],
+      "cache": true
+    },
+    {
+      "name": "articles",
+      "title": "文章管理",
+      "icon": "EditOutlined",
+      "path": "/articles",
+      "permissions": ["articles:view"],
+      "children": [
+        {
+          "name": "article-list",
+          "title": "文章列表",
+          "icon": "UnorderedListOutlined",
+          "path": "/articles/list",
+          "component": "ArticleList",
+          "permissions": ["articles:list:view"],
+          "actions": [
+            {
+              "name": "create",
+              "title": "新建文章",
+              "permission": "articles:create",
+              "type": "primary"
+            },
+            {
+              "name": "edit",
+              "title": "编辑",
+              "permission": "articles:edit"
+            },
+            {
+              "name": "publish",
+              "title": "发布",
+              "permission": "articles:publish"
+            },
+            {
+              "name": "delete",
+              "title": "删除",
+              "permission": "articles:delete"
+            },
+            {
+              "name": "export",
+              "title": "导出",
+              "permission": "articles:export"
+            }
+          ]
+        },
+        {
+          "name": "article-editor",
+          "title": "文章编辑器",
+          "icon": "FormOutlined",
+          "path": "/articles/editor",
+          "component": "ArticleEditor",
+          "permissions": ["articles:edit"],
+          "hidden": true
+        },
+        {
+          "name": "drafts",
+          "title": "草稿箱",
+          "icon": "SaveOutlined",
+          "path": "/articles/drafts",
+          "component": "ArticleDrafts",
+          "permissions": ["articles:drafts:view"]
+        },
+        {
+          "name": "trash",
+          "title": "回收站",
+          "icon": "DeleteOutlined",
+          "path": "/articles/trash",
+          "component": "ArticleTrash",
+          "permissions": ["articles:trash:view"]
+        }
+      ]
+    },
+    {
+      "name": "pages",
+      "title": "页面管理",
+      "icon": "FileTextOutlined",
+      "path": "/pages",
+      "permissions": ["pages:view"],
+      "children": [
+        {
+          "name": "page-list",
+          "title": "页面列表",
+          "icon": "UnorderedListOutlined",
+          "path": "/pages/list",
+          "component": "PageList",
+          "permissions": ["pages:list:view"],
+          "actions": [
+            {
+              "name": "create",
+              "title": "新建页面",
+              "permission": "pages:create",
+              "type": "primary"
+            },
+            {
+              "name": "edit",
+              "title": "编辑",
+              "permission": "pages:edit"
+            },
+            {
+              "name": "publish",
+              "title": "发布",
+              "permission": "pages:publish"
+            },
+            {
+              "name": "delete",
+              "title": "删除",
+              "permission": "pages:delete"
+            }
+          ]
+        },
+        {
+          "name": "page-templates",
+          "title": "页面模板",
+          "icon": "LayoutOutlined",
+          "path": "/pages/templates",
+          "component": "PageTemplates",
+          "permissions": ["pages:templates:view"]
+        }
+      ]
+    },
+    {
+      "name": "media",
+      "title": "媒体库",
+      "icon": "PictureOutlined",
+      "path": "/media",
+      "permissions": ["media:view"],
+      "children": [
+        {
+          "name": "media-library",
+          "title": "媒体文件",
+          "icon": "FolderOpenOutlined",
+          "path": "/media/library",
+          "component": "MediaLibrary",
+          "permissions": ["media:library:view"],
+          "actions": [
+            {
+              "name": "upload",
+              "title": "上传文件",
+              "permission": "media:upload",
+              "type": "primary"
+            },
+            {
+              "name": "edit",
+              "title": "编辑",
+              "permission": "media:edit"
+            },
+            {
+              "name": "delete",
+              "title": "删除",
+              "permission": "media:delete"
+            }
+          ]
+        },
+        {
+          "name": "galleries",
+          "title": "相册管理",
+          "icon": "FileImageOutlined",
+          "path": "/media/galleries",
+          "component": "MediaGalleries",
+          "permissions": ["media:galleries:view"]
+        },
+        {
+          "name": "videos",
+          "title": "视频管理",
+          "icon": "VideoCameraOutlined",
+          "path": "/media/videos",
+          "component": "MediaVideos",
+          "permissions": ["media:videos:view"]
+        }
+      ]
+    },
+    {
+      "name": "categories",
+      "title": "分类管理",
+      "icon": "AppstoreOutlined",
+      "path": "/categories",
+      "permissions": ["categories:view"],
+      "children": [
+        {
+          "name": "category-list",
+          "title": "分类列表",
+          "icon": "UnorderedListOutlined",
+          "path": "/categories/list",
+          "component": "CategoryList",
+          "permissions": ["categories:list:view"],
+          "actions": [
+            {
+              "name": "create",
+              "title": "新建分类",
+              "permission": "categories:create",
+              "type": "primary"
+            },
+            {
+              "name": "edit",
+              "title": "编辑",
+              "permission": "categories:edit"
+            },
+            {
+              "name": "delete",
+              "title": "删除",
+              "permission": "categories:delete"
+            }
+          ]
+        },
+        {
+          "name": "tags",
+          "title": "标签管理",
+          "icon": "TagsOutlined",
+          "path": "/categories/tags",
+          "component": "TagManagement",
+          "permissions": ["categories:tags:view"]
+        }
+      ]
+    },
+    {
+      "name": "comments",
+      "title": "评论管理",
+      "icon": "MessageOutlined",
+      "path": "/comments",
+      "permissions": ["comments:view"],
+      "children": [
+        {
+          "name": "comment-list",
+          "title": "评论列表",
+          "icon": "UnorderedListOutlined",
+          "path": "/comments/list",
+          "component": "CommentList",
+          "permissions": ["comments:list:view"],
+          "actions": [
+            {
+              "name": "approve",
+              "title": "批准",
+              "permission": "comments:approve"
+            },
+            {
+              "name": "reject",
+              "title": "拒绝",
+              "permission": "comments:reject"
+            },
+            {
+              "name": "reply",
+              "title": "回复",
+              "permission": "comments:reply"
+            },
+            {
+              "name": "delete",
+              "title": "删除",
+              "permission": "comments:delete"
+            }
+          ]
+        },
+        {
+          "name": "spam-filter",
+          "title": "垃圾过滤",
+          "icon": "FilterOutlined",
+          "path": "/comments/spam-filter",
+          "component": "SpamFilter",
+          "permissions": ["comments:spam:view"]
+        }
+      ]
+    },
+    {
+      "name": "seo",
+      "title": "SEO优化",
+      "icon": "SearchOutlined",
+      "path": "/seo",
+      "permissions": ["seo:view"],
+      "children": [
+        {
+          "name": "seo-settings",
+          "title": "SEO设置",
+          "icon": "SettingOutlined",
+          "path": "/seo/settings",
+          "component": "SEOSettings",
+          "permissions": ["seo:settings:view"]
+        },
+        {
+          "name": "meta-tags",
+          "title": "元标签管理",
+          "icon": "TagOutlined",
+          "path": "/seo/meta-tags",
+          "component": "MetaTags",
+          "permissions": ["seo:meta:view"]
+        },
+        {
+          "name": "sitemaps",
+          "title": "站点地图",
+          "icon": "GlobalOutlined",
+          "path": "/seo/sitemaps",
+          "component": "Sitemaps",
+          "permissions": ["seo:sitemaps:view"]
+        },
+        {
+          "name": "analytics",
+          "title": "SEO分析",
+          "icon": "BarChartOutlined",
+          "path": "/seo/analytics",
+          "component": "SEOAnalytics",
+          "permissions": ["seo:analytics:view"]
+        }
+      ]
+    },
+    {
+      "name": "forms",
+      "title": "表单管理",
+      "icon": "FormOutlined",
+      "path": "/forms",
+      "permissions": ["forms:view"],
+      "children": [
+        {
+          "name": "form-builder",
+          "title": "表单构建器",
+          "icon": "BuildOutlined",
+          "path": "/forms/builder",
+          "component": "FormBuilder",
+          "permissions": ["forms:builder:view"]
+        },
+        {
+          "name": "form-submissions",
+          "title": "表单提交",
+          "icon": "InboxOutlined",
+          "path": "/forms/submissions",
+          "component": "FormSubmissions",
+          "permissions": ["forms:submissions:view"]
+        },
+        {
+          "name": "form-analytics",
+          "title": "表单分析",
+          "icon": "LineChartOutlined",
+          "path": "/forms/analytics",
+          "component": "FormAnalytics",
+          "permissions": ["forms:analytics:view"]
+        }
+      ]
+    },
+    {
+      "name": "menus",
+      "title": "菜单管理",
+      "icon": "MenuOutlined",
+      "path": "/menus",
+      "permissions": ["menus:view"],
+      "children": [
+        {
+          "name": "navigation",
+          "title": "导航菜单",
+          "icon": "NodeIndexOutlined",
+          "path": "/menus/navigation",
+          "component": "NavigationMenus",
+          "permissions": ["menus:navigation:view"]
+        },
+        {
+          "name": "footer",
+          "title": "页脚菜单",
+          "icon": "BorderBottomOutlined",
+          "path": "/menus/footer",
+          "component": "FooterMenus",
+          "permissions": ["menus:footer:view"]
+        }
+      ]
+    },
+    {
+      "name": "themes",
+      "title": "主题管理",
+      "icon": "SkinOutlined",
+      "path": "/themes",
+      "permissions": ["themes:view"],
+      "children": [
+        {
+          "name": "theme-list",
+          "title": "主题列表",
+          "icon": "UnorderedListOutlined",
+          "path": "/themes/list",
+          "component": "ThemeList",
+          "permissions": ["themes:list:view"]
+        },
+        {
+          "name": "theme-customizer",
+          "title": "主题定制",
+          "icon": "BgColorsOutlined",
+          "path": "/themes/customizer",
+          "component": "ThemeCustomizer",
+          "permissions": ["themes:customizer:view"]
+        }
+      ]
+    },
+    {
+      "name": "system",
+      "title": "系统管理",
+      "icon": "SettingOutlined",
+      "path": "/system",
+      "permissions": ["system:view"],
+      "children": [
+        {
+          "name": "users",
+          "title": "用户管理",
+          "icon": "UserOutlined",
+          "path": "/system/users",
+          "component": "SystemUsers",
+          "permissions": ["system:users:view"]
+        },
+        {
+          "name": "roles",
+          "title": "角色管理",
+          "icon": "SafetyCertificateOutlined",
+          "path": "/system/roles",
+          "component": "SystemRoles",
+          "permissions": ["system:roles:view"]
+        },
+        {
+          "name": "backups",
+          "title": "数据备份",
+          "icon": "CloudUploadOutlined",
+          "path": "/system/backups",
+          "component": "SystemBackups",
+          "permissions": ["system:backups:view"]
+        },
+        {
+          "name": "logs",
+          "title": "系统日志",
+          "icon": "FileTextOutlined",
+          "path": "/system/logs",
+          "component": "SystemLogs",
+          "permissions": ["system:logs:view"]
+        },
+        {
+          "name": "settings",
+          "title": "系统设置",
+          "icon": "ControlOutlined",
+          "path": "/system/settings",
+          "component": "SystemSettings",
+          "permissions": ["system:settings:view"]
+        }
+      ]
+    }
+  ],
+  "permissions": {
+    "roles": [
+      {
+        "id": "admin",
+        "name": "超级管理员",
+        "description": "拥有所有权限",
+        "permissions": ["*"]
+      },
+      {
+        "id": "editor",
+        "name": "编辑",
+        "description": "内容编辑和管理权限",
+        "permissions": [
+          "dashboard:view",
+          "articles:*",
+          "pages:*",
+          "media:*",
+          "categories:*",
+          "comments:list:view",
+          "comments:approve",
+          "comments:reject",
+          "comments:reply",
+          "seo:view",
+          "seo:meta:*",
+          "forms:submissions:view"
+        ]
+      },
+      {
+        "id": "author",
+        "name": "作者",
+        "description": "文章创作权限",
+        "permissions": [
+          "dashboard:view",
+          "articles:list:view",
+          "articles:create",
+          "articles:edit",
+          "articles:drafts:view",
+          "media:library:view",
+          "media:upload",
+          "categories:list:view",
+          "categories:tags:view"
+        ]
+      },
+      {
+        "id": "contributor",
+        "name": "贡献者",
+        "description": "基础内容贡献权限",
+        "permissions": [
+          "dashboard:view",
+          "articles:list:view",
+          "articles:create",
+          "articles:drafts:view",
+          "media:library:view",
+          "categories:list:view"
+        ]
+      },
+      {
+        "id": "subscriber",
+        "name": "订阅者",
+        "description": "仅查看权限",
+        "permissions": [
+          "dashboard:view",
+          "articles:list:view",
+          "media:library:view"
+        ]
+      }
+    ],
+    "resources": [
+      {
+        "id": "dashboard",
+        "name": "内容概览",
+        "actions": ["view"]
+      },
+      {
+        "id": "articles",
+        "name": "文章管理",
+        "actions": ["view"],
+        "children": [
+          {
+            "id": "list",
+            "name": "文章列表",
+            "actions": ["view", "create", "edit", "delete", "publish", "export"]
+          },
+          {
+            "id": "edit",
+            "name": "文章编辑",
+            "actions": ["view", "edit"]
+          },
+          {
+            "id": "drafts",
+            "name": "草稿箱",
+            "actions": ["view", "create", "edit", "delete"]
+          },
+          {
+            "id": "trash",
+            "name": "回收站",
+            "actions": ["view", "restore", "delete"]
+          }
+        ]
+      },
+      {
+        "id": "pages",
+        "name": "页面管理",
+        "actions": ["view"],
+        "children": [
+          {
+            "id": "list",
+            "name": "页面列表",
+            "actions": ["view", "create", "edit", "delete", "publish"]
+          },
+          {
+            "id": "templates",
+            "name": "页面模板",
+            "actions": ["view", "create", "edit", "delete"]
+          }
+        ]
+      },
+      {
+        "id": "media",
+        "name": "媒体库",
+        "actions": ["view"],
+        "children": [
+          {
+            "id": "library",
+            "name": "媒体文件",
+            "actions": ["view", "upload", "edit", "delete"]
+          },
+          {
+            "id": "galleries",
+            "name": "相册管理",
+            "actions": ["view", "create", "edit", "delete"]
+          },
+          {
+            "id": "videos",
+            "name": "视频管理",
+            "actions": ["view", "upload", "edit", "delete"]
+          }
+        ]
+      },
+      {
+        "id": "categories",
+        "name": "分类管理",
+        "actions": ["view"],
+        "children": [
+          {
+            "id": "list",
+            "name": "分类列表",
+            "actions": ["view", "create", "edit", "delete"]
+          },
+          {
+            "id": "tags",
+            "name": "标签管理",
+            "actions": ["view", "create", "edit", "delete"]
+          }
+        ]
+      },
+      {
+        "id": "comments",
+        "name": "评论管理",
+        "actions": ["view"],
+        "children": [
+          {
+            "id": "list",
+            "name": "评论列表",
+            "actions": ["view", "approve", "reject", "reply", "delete"]
+          },
+          {
+            "id": "spam",
+            "name": "垃圾过滤",
+            "actions": ["view", "create", "edit", "delete"]
+          }
+        ]
+      },
+      {
+        "id": "seo",
+        "name": "SEO优化",
+        "actions": ["view"],
+        "children": [
+          {
+            "id": "settings",
+            "name": "SEO设置",
+            "actions": ["view", "edit"]
+          },
+          {
+            "id": "meta",
+            "name": "元标签管理",
+            "actions": ["view", "create", "edit", "delete"]
+          },
+          {
+            "id": "sitemaps",
+            "name": "站点地图",
+            "actions": ["view", "generate"]
+          },
+          {
+            "id": "analytics",
+            "name": "SEO分析",
+            "actions": ["view", "export"]
+          }
+        ]
+      },
+      {
+        "id": "forms",
+        "name": "表单管理",
+        "actions": ["view"],
+        "children": [
+          {
+            "id": "builder",
+            "name": "表单构建器",
+            "actions": ["view", "create", "edit", "delete"]
+          },
+          {
+            "id": "submissions",
+            "name": "表单提交",
+            "actions": ["view", "export", "delete"]
+          },
+          {
+            "id": "analytics",
+            "name": "表单分析",
+            "actions": ["view", "export"]
+          }
+        ]
+      },
+      {
+        "id": "menus",
+        "name": "菜单管理",
+        "actions": ["view"],
+        "children": [
+          {
+            "id": "navigation",
+            "name": "导航菜单",
+            "actions": ["view", "create", "edit", "delete"]
+          },
+          {
+            "id": "footer",
+            "name": "页脚菜单",
+            "actions": ["view", "create", "edit", "delete"]
+          }
+        ]
+      },
+      {
+        "id": "themes",
+        "name": "主题管理",
+        "actions": ["view"],
+        "children": [
+          {
+            "id": "list",
+            "name": "主题列表",
+            "actions": ["view", "install", "activate", "delete"]
+          },
+          {
+            "id": "customizer",
+            "name": "主题定制",
+            "actions": ["view", "edit"]
+          }
+        ]
+      },
+      {
+        "id": "system",
+        "name": "系统管理",
+        "actions": ["view"],
+        "children": [
+          {
+            "id": "users",
+            "name": "用户管理",
+            "actions": ["view", "create", "edit", "delete"]
+          },
+          {
+            "id": "roles",
+            "name": "角色管理",
+            "actions": ["view", "create", "edit", "delete"]
+          },
+          {
+            "id": "backups",
+            "name": "数据备份",
+            "actions": ["view", "create", "restore", "delete"]
+          },
+          {
+            "id": "logs",
+            "name": "系统日志",
+            "actions": ["view", "export", "delete"]
+          },
+          {
+            "id": "settings",
+            "name": "系统设置",
+            "actions": ["view", "edit"]
+          }
+        ]
+      }
+    ]
+  },
+  "api": {
+    "baseURL": "https://api.cms.com",
+    "timeout": 15000,
+    "retries": 3,
+    "version": "v1",
+    "prefix": "/api",
+    "auth": {
+      "type": "bearer",
+      "headerName": "Authorization",
+      "tokenPrefix": "Bearer "
+    },
+    "interceptors": {
+      "request": true,
+      "response": true,
+      "error": true
+    },
+    "mock": {
+      "enabled": true,
+      "delay": 1000,
+      "baseURL": "/api/mock"
+    }
+  },
+  "database": {
+    "type": "mysql",
+    "host": "localhost",
+    "port": 3306,
+    "database": "cms_admin",
+    "username": "admin",
+    "pool": {
+      "min": 5,
+      "max": 20
+    },
+    "migrations": {
+      "enabled": true,
+      "directory": "migrations"
+    },
+    "seeds": {
+      "enabled": true,
+      "directory": "seeds"
+    }
+  },
+  "deployment": {
+    "environment": "production",
+    "baseURL": "https://admin.cms.com",
+    "cdn": {
+      "enabled": true,
+      "domain": "https://cdn.cms.com"
+    },
+    "ssl": {
+      "enabled": true,
+      "forceHTTPS": true
+    },
+    "compression": {
+      "enabled": true,
+      "level": 6
+    },
+    "monitoring": {
+      "enabled": true,
+      "errorTracking": true,
+      "performanceMonitoring": true
+    }
+  },
+  "development": {
+    "port": 3000,
+    "host": "localhost",
+    "https": false,
+    "proxy": {
+      "/api": {
+        "target": "http://localhost:8080",
+        "changeOrigin": true,
+        "pathRewrite": {
+          "^/api": ""
+        }
+      }
+    },
+    "devTools": {
+      "enabled": true,
+      "redux": true,
+      "reactQuery": true
+    }
+  },
+  "build": {
+    "outputPath": "dist",
+    "publicPath": "/",
+    "sourcemap": false,
+    "minify": true,
+    "extractCSS": true,
+    "bundleAnalyzer": false,
+    "optimization": {
+      "splitChunks": true,
+      "runtimeChunk": true,
+      "usedExports": true,
+      "sideEffects": false
+    }
+  },
+  "testing": {
+    "unit": {
+      "enabled": true,
+      "framework": "jest",
+      "coverage": true,
+      "threshold": 85
+    },
+    "e2e": {
+      "enabled": true,
+      "framework": "playwright",
+      "baseURL": "http://localhost:3000"
+    }
+  }
+}
